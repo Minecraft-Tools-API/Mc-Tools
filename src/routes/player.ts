@@ -21,7 +21,7 @@ async function proxyImage(url: string, filename = 'image.png'): Promise<Response
   return new Response(body, {
     headers: {
       'Content-Type': 'image/png',
-      'Content-Disposition': `inline; filename="${filename}"`,
+      'Content-Disposition': `attachment; filename="${filename}"`,
       'X-Content-Type-Options': 'nosniff',
       'Cache-Control': 'public, max-age=3600',
       'Access-Control-Allow-Origin': '*',
