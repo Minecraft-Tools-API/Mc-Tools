@@ -118,7 +118,38 @@ playerRoutes.get('/:name/skin.png', async (c) => {
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
   if (!profile?._textures?.skin) return c.json({ error: 'No skin found' }, 404)
-  return proxyImage(profile._textures.skin)
+
+  const res = await fetch(profile._textures.skin)
+  if (!res.ok) return c.json({ error: 'Failed to fetch skin' }, 502)
+  const buf = await res.arrayBuffer()
+
+  const img = UPNG.decode(buf)
+  const frames = UPNG.toRGBA8(img)
+  const src = new Uint8Array(frames[0])
+  const iw = img.width, ih = img.height
+
+  const zoom = 8
+  const ow = iw * zoom, oh = ih * zoom
+  const out = new Uint8Array(ow * oh * 4)
+  for (let y = 0; y < oh; y++) {
+    for (let x = 0; x < ow; x++) {
+      const si = (Math.floor(y / zoom) * iw + Math.floor(x / zoom)) * 4
+      const di = (y * ow + x) * 4
+      out[di]     = src[si]
+      out[di + 1] = src[si + 1]
+      out[di + 2] = src[si + 2]
+      out[di + 3] = src[si + 3]
+    }
+  }
+
+  const encoded = UPNG.encode([out.buffer], ow, oh, 0)
+  return new Response(encoded, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*',
+    },
+  })
 })
 
 playerRoutes.get('/:name/cape.png', async (c) => {
