@@ -14,13 +14,14 @@ const dashUuid = (u: string) => {
 }
 const toHttps = (url: string) => url.replace('http://', 'https://')
 
-async function proxyImage(url: string): Promise<Response> {
+async function proxyImage(url: string, contentType = 'image/png'): Promise<Response> {
   const res = await fetch(url)
   if (!res.ok) return new Response('Not found', { status: 404 })
   const body = await res.arrayBuffer()
   return new Response(body, {
     headers: {
-      'Content-Type': res.headers.get('Content-Type') ?? 'image/png',
+      'Content-Type': contentType,
+      'Content-Disposition': 'inline',
       'Cache-Control': 'public, max-age=3600',
       'Access-Control-Allow-Origin': '*',
     },
