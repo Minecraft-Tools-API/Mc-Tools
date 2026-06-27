@@ -1,0 +1,52 @@
+Copyright (c) 2025 liamt (juliancamilparratrujillo@gmail.com)
+All rights reserved.
+
+TERMS AND CONDITIONS
+
+1. DEFINITIONS
+   "Software" refers to MCTools API, including all source code, documentation,
+   assets, configuration files, and associated materials in this repository.
+   "Author" refers to liamt, the sole copyright holder of this Software.
+   "You" refers to any individual or entity accessing, viewing, or using this repository.
+
+2. GRANT OF RIGHTS
+   No rights are granted to You under this license. This Software is proprietary
+   and confidential. The source code is made available for viewing purposes only.
+
+3. RESTRICTIONS
+   You may NOT, without explicit written permission from the Author:
+   a) Copy, reproduce, or duplicate any part of this Software.
+   b) Modify, adapt, translate, or create derivative works based on this Software.
+   c) Distribute, sublicense, sell, rent, lease, or transfer this Software or
+      any portion thereof to any third party.
+   d) Use this Software, in whole or in part, for any commercial or non-commercial
+      purpose, product, or service.
+   e) Reverse engineer, decompile, or disassemble this Software.
+   f) Remove or alter any copyright notices, license notices, or other proprietary
+      markings in this Software.
+   g) Use the name "MCTools", "MCTools API", or "liamt" to endorse or promote
+      products derived from this Software.
+
+4. PUBLIC API USE
+   The public API endpoint at https://mctools.liamt.xyz is provided as a free
+   service at the Author's sole discretion. The Author reserves the right to
+   restrict, modify, rate-limit, or discontinue access at any time without notice.
+   Use of the public API does not grant any rights to the underlying source code.
+
+5. NO WARRANTY
+   THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL
+   THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM,
+   OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE THEREOF.
+
+6. TERMINATION
+   Any unauthorized use of this Software automatically terminates any implied
+   permissions and may subject You to legal action under applicable copyright law.
+
+7. GOVERNING LAW
+   This license shall be governed by and construed in accordance with applicable
+   international copyright law and treaties.
+
+For permissions beyond the scope of this license, contact:
+juliancamilparratrujillo@gmail.com

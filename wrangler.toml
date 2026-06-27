@@ -1,0 +1,8 @@
+name = "minecraft-api-tools"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+routes = [
+  { pattern = "mctools.liamt.xyz/*", zone_name = "liamt.xyz" }
+]

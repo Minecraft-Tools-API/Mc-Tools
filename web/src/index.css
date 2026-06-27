@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('./assets/Minecraft-Seven_v2.woff2') format('woff2');
+  font-weight: normal;
+}
+@font-face {
+  font-family: 'Minecraft';
+  src: url('./assets/MinecraftSixteen.woff2') format('woff2');
+  font-weight: bold;
+}
+@font-face {
+  font-family: 'MinecraftTen';
+  src: url('./assets/Minecraft-Tenv2.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'NotoSans';
+  src: url('./assets/NotoSans-Regular.woff2') format('woff2');
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:    #FFAA00;
+  --gold-l:  #FFD966;
+  --green:   #5EAD3F;
+  --green-l: #7DC95E;
+  --red:     #C0392B;
+  --aqua:    #55FFFF;
+  --gray:    #8a8a8a;
+  --light:   #d4d4d4;
+  --bg:      #0f0f0f;
+  --bg2:     #181818;
+  --bg3:     #222222;
+  --border:  #2e2e2e;
+}
+
+body {
+  background: var(--bg);
+  color: var(--light);
+  font-family: 'NotoSans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'MinecraftTen', sans-serif;
+  line-height: 1.2;
+}
+
+/* Minecraft solo para títulos y elementos de UI tipo juego */
+.font-mc   { font-family: 'Minecraft', monospace; }
+.font-ten  { font-family: 'MinecraftTen', sans-serif; }
+.font-sans { font-family: 'NotoSans', system-ui, sans-serif; }
+.font-mono { font-family: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace; font-size: 13px; }
+
+/* ── Card ── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* ── Input ── */
+.mc-input {
+  font-family: 'NotoSans', system-ui, sans-serif;
+  font-size: 14px;
+  background: #111;
+  color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 10px 14px;
+  outline: none;
+  width: 100%;
+  transition: border-color .15s;
+}
+.mc-input:focus { border-color: var(--gold); }
+.mc-input::placeholder { color: #555; }
+
+/* ── Button ── */
+.mc-btn {
+  font-family: 'NotoSans', system-ui, sans-serif;
+  font-size: 11px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: filter .15s, transform .1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.mc-btn:hover   { filter: brightness(1.15); }
+.mc-btn:active  { transform: scale(.98); }
+.mc-btn.gold    { background: var(--gold);  color: #111; }
+.mc-btn.green   { background: var(--green); color: #fff; }
+.mc-btn.ghost   { background: transparent; color: var(--light); border: 1px solid var(--border); }
+
+/* ── Badge ── */
+.badge {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-weight: bold;
+  font-size: 9px;
+  padding: 3px 8px;
+  border-radius: 2px;
+  display: inline-block;
+  letter-spacing: .5px;
+}
+.badge.green  { background: rgba(94,173,63,.15);  color: var(--green-l); border: 1px solid rgba(94,173,63,.3); }
+.badge.gold   { background: rgba(255,170,0,.12);  color: var(--gold);    border: 1px solid rgba(255,170,0,.3); }
+.badge.aqua   { background: rgba(85,255,255,.1);  color: var(--aqua);    border: 1px solid rgba(85,255,255,.25); }
+.badge.red    { background: rgba(192,57,43,.15);  color: #ff6b6b;        border: 1px solid rgba(192,57,43,.3); }
+.badge.purple { background: rgba(155,89,182,.15); color: #c39bd3;        border: 1px solid rgba(155,89,182,.3); }
+
+/* ── JSON block ── */
+.json-block {
+  background: #0a0a0a;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #7DC95E;
+  overflow: auto;
+  max-height: 200px;
+  white-space: pre;
+}
+
+/* ── Section title ── */
+.section-title {
+  font-family: 'MinecraftTen', monospace;
+  font-size: 22px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ── Tab ── */
+.tab { padding: 14px 28px; font-family: 'NotoSans', system-ui, sans-serif; font-size: 16px; cursor: pointer; color: var(--gray); border-bottom: 3px solid transparent; transition: color .15s, border-color .15s; background: none; border-top: none; border-left: none; border-right: none; }
+.tab:hover { color: var(--light); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── Player bar ── */
+.health-bar { height: 6px; background: #111; border-radius: 1px; overflow: hidden; }
+.health-bar-fill { height: 100%; transition: width .4s; border-radius: 1px; }
+
+/* ── Spin ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin .7s linear infinite; }
+
+/* ── Pulse dot ── */
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+.pulse { animation: pulse 1.5s ease infinite; }
+
+/* ── Entrance animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-fade-up   { animation: fadeUp  .55s cubic-bezier(.22,.68,0,1.1) both; }
+.anim-fade-in   { animation: fadeIn  .45s ease both; }
+.anim-slide-down{ animation: slideDown .4s cubic-bezier(.22,.68,0,1.1) both; }
+.anim-d1 { animation-delay: .08s; }
+.anim-d2 { animation-delay: .18s; }
+.anim-d3 { animation-delay: .30s; }
+.anim-d4 { animation-delay: .44s; }
+.anim-d5 { animation-delay: .58s; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
