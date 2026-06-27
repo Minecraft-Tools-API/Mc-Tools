@@ -8,7 +8,10 @@ async function safeJson(res: Response) {
   try { return JSON.parse(text) } catch { return null }
 }
 
-const dashUuid = (u: string) => `${u.slice(0,8)}-${u.slice(8,12)}-${u.slice(12,16)}-${u.slice(16,20)}-${u.slice(20)}`
+const dashUuid = (u: string) => {
+  const clean = u.replace(/-/g, '')
+  return `${clean.slice(0,8)}-${clean.slice(8,12)}-${clean.slice(12,16)}-${clean.slice(16,20)}-${clean.slice(20)}`
+}
 const toHttps = (url: string) => url.replace('http://', 'https://')
 
 async function proxyImage(url: string): Promise<Response> {
@@ -24,45 +27,38 @@ async function proxyImage(url: string): Promise<Response> {
   })
 }
 
-const HEADERS = { 'User-Agent': 'MCTools-API/1.0 (https://mctools.liamt.xyz)' }
+interface AshconProfile {
+  uuid: string
+  username: string
+  textures: {
+    skin?: { url: string }
+    cape?: { url: string }
+    slim: boolean
+    custom: boolean
+  }
+}
 
 async function getProfile(name: string, base: string) {
-  const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
-  if (!uuidRes.ok) return null
+  // ashcon.app: proxy de Mojang que funciona desde Cloudflare Workers
+  const res = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`)
+  if (!res.ok) return null
 
-  const uuidData = await safeJson(uuidRes)
-  if (!uuidData) return null
+  const data = await safeJson(res) as AshconProfile | null
+  if (!data?.uuid) return null
 
-  const { id: uuid, name: realName } = uuidData as { id: string; name: string }
-
-  const profileRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false`, { headers: HEADERS })
-  const noSkin = () => ({
-    uuid, uuid_dashed: dashUuid(uuid), name: realName, skin: null, cape: null,
-    head_render: `${base}/player/${realName}/head`,
-    body_render: `${base}/player/${realName}/body`,
-  })
-
-  if (!profileRes.ok || profileRes.status === 204) return noSkin()
-
-  const profile = await safeJson(profileRes) as { properties: Array<{ name: string; value: string }> } | null
-  if (!profile) return noSkin()
-
-  const textureProp = profile.properties.find(p => p.name === 'textures')
-  if (!textureProp) return noSkin()
-
-  let decoded: { textures: { SKIN?: { url: string; metadata?: { model: string } }; CAPE?: { url: string } } } | null = null
-  try { decoded = JSON.parse(atob(textureProp.value)) } catch { /* no texture data */ }
-
-  const skin = decoded?.textures?.SKIN
-  const cape = decoded?.textures?.CAPE
+  const uuid = data.uuid.replace(/-/g, '')
+  const realName = data.username
 
   return {
     uuid,
     uuid_dashed: dashUuid(uuid),
     name: realName,
-    // textures.minecraft.net ya tiene CORS abierto, se mantiene la URL original
-    skin: skin ? { url: toHttps(skin.url), model: skin.metadata?.model ?? 'classic' } : null,
-    cape: cape ? { url: toHttps(cape.url) } : null,
+    skin: data.textures.skin
+      ? { url: toHttps(data.textures.skin.url), model: data.textures.slim ? 'slim' : 'classic' }
+      : null,
+    cape: data.textures.cape
+      ? { url: toHttps(data.textures.cape.url) }
+      : null,
     head_render: `${base}/player/${realName}/head`,
     body_render: `${base}/player/${realName}/body`,
   }
@@ -78,11 +74,12 @@ playerRoutes.get('/:name', async (c) => {
 
 playerRoutes.get('/:name/uuid', async (c) => {
   const name = c.req.param('name')
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
+  const res = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`)
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
-  const data = await safeJson(res) as { id: string; name: string } | null
-  if (!data) return c.json({ error: 'Failed to parse response' }, 500)
-  return c.json({ name: data.name, uuid: data.id, uuid_dashed: dashUuid(data.id) })
+  const data = await safeJson(res) as AshconProfile | null
+  if (!data?.uuid) return c.json({ error: 'Failed to parse response' }, 500)
+  const uuid = data.uuid.replace(/-/g, '')
+  return c.json({ name: data.username, uuid, uuid_dashed: dashUuid(uuid) })
 })
 
 playerRoutes.get('/:name/skin', async (c) => {
@@ -97,19 +94,21 @@ playerRoutes.get('/:name/skin', async (c) => {
 playerRoutes.get('/:name/head', async (c) => {
   const name = c.req.param('name')
   const size = Number(c.req.query('size') ?? 200)
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
+  const res = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`)
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
-  const data = await safeJson(res) as { id: string } | null
-  if (!data) return c.json({ error: 'Not found' }, 500)
-  return proxyImage(`https://mc-heads.net/head/${data.id}/${size}`)
+  const data = await safeJson(res) as AshconProfile | null
+  if (!data?.uuid) return c.json({ error: 'Not found' }, 500)
+  const uuid = data.uuid.replace(/-/g, '')
+  return proxyImage(`https://mc-heads.net/head/${uuid}/${size}`)
 })
 
 // Proxy: cuerpo completo
 playerRoutes.get('/:name/body', async (c) => {
   const name = c.req.param('name')
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
+  const res = await fetch(`https://api.ashcon.app/mojang/v2/user/${name}`)
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
-  const data = await safeJson(res) as { id: string } | null
-  if (!data) return c.json({ error: 'Not found' }, 500)
-  return proxyImage(`https://visage.surgeplay.com/full/400/${data.id}`)
+  const data = await safeJson(res) as AshconProfile | null
+  if (!data?.uuid) return c.json({ error: 'Not found' }, 500)
+  const uuid = data.uuid.replace(/-/g, '')
+  return proxyImage(`https://visage.surgeplay.com/full/400/${uuid}`)
 })
