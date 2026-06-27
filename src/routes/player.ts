@@ -14,15 +14,13 @@ const dashUuid = (u: string) => {
 }
 const toHttps = (url: string) => url.replace('http://', 'https://')
 
-async function proxyImage(url: string, filename = 'image.png'): Promise<Response> {
+async function proxyImage(url: string): Promise<Response> {
   const res = await fetch(url)
   if (!res.ok) return new Response('Not found', { status: 404 })
   const body = await res.arrayBuffer()
   return new Response(body, {
     headers: {
       'Content-Type': 'image/png',
-      'Content-Disposition': `attachment; filename="${filename}"`,
-      'X-Content-Type-Options': 'nosniff',
       'Cache-Control': 'public, max-age=3600',
       'Access-Control-Allow-Origin': '*',
     },
@@ -119,7 +117,7 @@ playerRoutes.get('/:name/skin-texture', async (c) => {
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
   if (!profile?._textures?.skin) return c.json({ error: 'No skin found' }, 404)
-  return proxyImage(profile._textures.skin, `${name}-skin.png`)
+  return proxyImage(profile._textures.skin)
 })
 
 playerRoutes.get('/:name/cape-texture', async (c) => {
@@ -127,7 +125,7 @@ playerRoutes.get('/:name/cape-texture', async (c) => {
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
   if (!profile?._textures?.cape) return c.json({ error: 'No cape found' }, 404)
-  return proxyImage(profile._textures.cape, `${name}-cape.png`)
+  return proxyImage(profile._textures.cape)
 })
 
 playerRoutes.get('/:name/head', async (c) => {
@@ -137,7 +135,7 @@ playerRoutes.get('/:name/head', async (c) => {
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
   const json = await safeJson(res) as { success: boolean; data?: { player: PlayerDBPlayer } } | null
   if (!json?.success || !json.data) return c.json({ error: 'Not found' }, 404)
-  return proxyImage(`https://mc-heads.net/head/${json.data.player.raw_id}/${size}`, `${name}-head.png`)
+  return proxyImage(`https://mc-heads.net/head/${json.data.player.raw_id}/${size}`)
 })
 
 playerRoutes.get('/:name/body', async (c) => {
@@ -146,5 +144,5 @@ playerRoutes.get('/:name/body', async (c) => {
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
   const json = await safeJson(res) as { success: boolean; data?: { player: PlayerDBPlayer } } | null
   if (!json?.success || !json.data) return c.json({ error: 'Not found' }, 404)
-  return proxyImage(`https://visage.surgeplay.com/full/400/${json.data.player.raw_id}`, `${name}-body.png`)
+  return proxyImage(`https://visage.surgeplay.com/full/400/${json.data.player.raw_id}`)
 })
