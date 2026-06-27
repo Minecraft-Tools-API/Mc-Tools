@@ -140,12 +140,14 @@ playerRoutes.get('/:name/cape.png', async (c) => {
   const sx = Math.round(1 * scale), sy = Math.round(1 * scale)
   const sw = Math.round(10 * scale), sh = Math.round(16 * scale)
 
-  // Extraer región
-  const out = new Uint8Array(sw * sh * 4)
-  for (let y = 0; y < sh; y++) {
-    for (let x = 0; x < sw; x++) {
-      const si = ((sy + y) * iw + (sx + x)) * 4
-      const di = (y * sw + x) * 4
+  // Extraer y escalar con nearest-neighbor (pixelado estilo Minecraft)
+  const zoom = 20
+  const ow = sw * zoom, oh = sh * zoom
+  const out = new Uint8Array(ow * oh * 4)
+  for (let y = 0; y < oh; y++) {
+    for (let x = 0; x < ow; x++) {
+      const si = ((sy + Math.floor(y / zoom)) * iw + (sx + Math.floor(x / zoom))) * 4
+      const di = (y * ow + x) * 4
       out[di]     = src[si]
       out[di + 1] = src[si + 1]
       out[di + 2] = src[si + 2]
@@ -153,7 +155,7 @@ playerRoutes.get('/:name/cape.png', async (c) => {
     }
   }
 
-  const encoded = UPNG.encode([out.buffer], sw, sh, 0)
+  const encoded = UPNG.encode([out.buffer], ow, oh, 0)
   return new Response(encoded, {
     headers: {
       'Content-Type': 'image/png',
