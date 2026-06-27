@@ -24,8 +24,10 @@ async function proxyImage(url: string): Promise<Response> {
   })
 }
 
+const HEADERS = { 'User-Agent': 'MCTools-API/1.0 (https://mctools.liamt.xyz)' }
+
 async function getProfile(name: string, base: string) {
-  const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`)
+  const uuidRes = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
   if (!uuidRes.ok) return null
 
   const uuidData = await safeJson(uuidRes)
@@ -33,7 +35,7 @@ async function getProfile(name: string, base: string) {
 
   const { id: uuid, name: realName } = uuidData as { id: string; name: string }
 
-  const profileRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false`)
+  const profileRes = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}?unsigned=false`, { headers: HEADERS })
   const noSkin = () => ({
     uuid, uuid_dashed: dashUuid(uuid), name: realName, skin: null, cape: null,
     head_render: `${base}/player/${realName}/head`,
@@ -76,7 +78,7 @@ playerRoutes.get('/:name', async (c) => {
 
 playerRoutes.get('/:name/uuid', async (c) => {
   const name = c.req.param('name')
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`)
+  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
   const data = await safeJson(res) as { id: string; name: string } | null
   if (!data) return c.json({ error: 'Failed to parse response' }, 500)
@@ -95,7 +97,7 @@ playerRoutes.get('/:name/skin', async (c) => {
 playerRoutes.get('/:name/head', async (c) => {
   const name = c.req.param('name')
   const size = Number(c.req.query('size') ?? 200)
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`)
+  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
   const data = await safeJson(res) as { id: string } | null
   if (!data) return c.json({ error: 'Not found' }, 500)
@@ -105,7 +107,7 @@ playerRoutes.get('/:name/head', async (c) => {
 // Proxy: cuerpo completo
 playerRoutes.get('/:name/body', async (c) => {
   const name = c.req.param('name')
-  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`)
+  const res = await fetch(`https://api.mojang.com/users/profiles/minecraft/${name}`, { headers: HEADERS })
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
   const data = await safeJson(res) as { id: string } | null
   if (!data) return c.json({ error: 'Not found' }, 500)
