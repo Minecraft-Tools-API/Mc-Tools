@@ -68,10 +68,19 @@ async function getProfile(name: string, base: string) {
     uuid,
     uuid_dashed: dashUuid(uuid),
     name: realName,
-    skin: p.skin_texture ? { url: toHttps(p.skin_texture), model: slim ? 'slim' : 'classic' } : null,
-    cape: capeUrl ? { url: toHttps(capeUrl) } : null,
+    skin: p.skin_texture
+      ? { url: `${base}/player/${realName}/skin-texture`, model: slim ? 'slim' : 'classic' }
+      : null,
+    cape: capeUrl
+      ? { url: `${base}/player/${realName}/cape-texture` }
+      : null,
     head_render: `${base}/player/${realName}/head`,
     body_render: `${base}/player/${realName}/body`,
+    // URLs originales para uso interno del 3D viewer (CORS nativo de Mojang)
+    _textures: {
+      skin: p.skin_texture ? toHttps(p.skin_texture) : null,
+      cape: capeUrl ? toHttps(capeUrl) : null,
+    },
   }
 }
 
@@ -80,7 +89,9 @@ playerRoutes.get('/:name', async (c) => {
   const name = c.req.param('name')
   const profile = await getProfile(name, base)
   if (!profile) return c.json({ error: `Player "${name}" not found` }, 404)
-  return c.json(profile)
+  const { _textures, ...pub } = profile
+  void _textures
+  return c.json(pub)
 })
 
 playerRoutes.get('/:name/uuid', async (c) => {
@@ -99,6 +110,22 @@ playerRoutes.get('/:name/skin', async (c) => {
   const profile = await getProfile(name, base)
   if (!profile) return c.json({ error: `Player "${name}" not found` }, 404)
   return c.json({ name: profile.name, uuid: profile.uuid, skin: profile.skin, head_render: profile.head_render, body_render: profile.body_render })
+})
+
+playerRoutes.get('/:name/skin-texture', async (c) => {
+  const name = c.req.param('name')
+  const base = new URL(c.req.url).origin
+  const profile = await getProfile(name, base)
+  if (!profile?._textures?.skin) return c.json({ error: 'No skin found' }, 404)
+  return proxyImage(profile._textures.skin)
+})
+
+playerRoutes.get('/:name/cape-texture', async (c) => {
+  const name = c.req.param('name')
+  const base = new URL(c.req.url).origin
+  const profile = await getProfile(name, base)
+  if (!profile?._textures?.cape) return c.json({ error: 'No cape found' }, 404)
+  return proxyImage(profile._textures.cape)
 })
 
 playerRoutes.get('/:name/head', async (c) => {
