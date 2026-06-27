@@ -8,12 +8,17 @@
     "deploy": "wrangler deploy",
     "type-check": "tsc --noEmit"
   },
-  "keywords": ["minecraft", "api", "cloudflare-workers"],
+  "keywords": [
+    "minecraft",
+    "api",
+    "cloudflare-workers"
+  ],
   "author": "liamt",
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "hono": "^4.12.27"
+    "hono": "^4.12.27",
+    "upng-js": "^2.1.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260627.1",

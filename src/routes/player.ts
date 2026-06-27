@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import UPNG from 'upng-js'
 
 export const playerRoutes = new Hono()
 
@@ -125,7 +126,41 @@ playerRoutes.get('/:name/cape.png', async (c) => {
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
   if (!profile?._textures?.cape) return c.json({ error: 'No cape found' }, 404)
-  return proxyImage(profile._textures.cape)
+
+  const res = await fetch(profile._textures.cape)
+  if (!res.ok) return c.json({ error: 'Failed to fetch cape' }, 502)
+  const buf = await res.arrayBuffer()
+
+  // Decodificar PNG, recortar cara frontal de la capa (x=1,y=1,w=10,h=16 en 64x32)
+  const img = UPNG.decode(buf)
+  const frames = UPNG.toRGBA8(img)
+  const src = new Uint8Array(frames[0])
+  const iw = img.width   // ancho original (64 o 128...)
+  const scale = iw / 64
+  const sx = Math.round(1 * scale), sy = Math.round(1 * scale)
+  const sw = Math.round(10 * scale), sh = Math.round(16 * scale)
+
+  // Extraer región
+  const out = new Uint8Array(sw * sh * 4)
+  for (let y = 0; y < sh; y++) {
+    for (let x = 0; x < sw; x++) {
+      const si = ((sy + y) * iw + (sx + x)) * 4
+      const di = (y * sw + x) * 4
+      out[di]     = src[si]
+      out[di + 1] = src[si + 1]
+      out[di + 2] = src[si + 2]
+      out[di + 3] = src[si + 3]
+    }
+  }
+
+  const encoded = UPNG.encode([out.buffer], sw, sh, 0)
+  return new Response(encoded, {
+    headers: {
+      'Content-Type': 'image/png',
+      'Cache-Control': 'public, max-age=3600',
+      'Access-Control-Allow-Origin': '*',
+    },
+  })
 })
 
 playerRoutes.get('/:name/head.png', async (c) => {
