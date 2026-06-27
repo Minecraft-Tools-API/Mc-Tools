@@ -177,7 +177,7 @@ export default function App() {
 
           <div className="anim-fade-up anim-d4" style={{ display: 'inline-flex', alignItems: 'center', background: '#111', border: '1px solid #2a2a2a', borderRadius: 4, padding: '10px 18px', gap: 6 }}>
             <span className="font-mono" style={{ color: 'var(--gray)' }}>GET</span>
-            <span className="font-mono" style={{ color: 'var(--green-l)' }}>https://mctools.liamt.xyz</span>
+            <span className="font-mono" style={{ color: 'var(--green-l)' }}>https://api.mctools.liamt.xyz</span>
             <span className="font-mono" style={{ color: 'var(--gray)' }}>/player/Notch</span>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function App() {
         <section className="anim-fade-up anim-d2">
           <div style={{ marginBottom: 24, padding: '20px 24px', background: 'linear-gradient(90deg, rgba(255,170,0,0.07) 0%, transparent 100%)', borderLeft: '3px solid var(--gold)', borderRadius: '0 4px 4px 0' }}>
             <h2 className="section-title" style={{ marginBottom: 8, textShadow: '0 0 20px rgba(255,170,0,0.4)' }}>Endpoints</h2>
-            <p className="font-sans" style={{ color: 'var(--gray)', fontSize: 14 }}>Base URL: <span style={{ color: 'var(--green-l)' }}>https://mctools.liamt.xyz</span></p>
+            <p className="font-sans" style={{ color: 'var(--gray)', fontSize: 14 }}>Base URL: <span style={{ color: 'var(--green-l)' }}>https://api.mctools.liamt.xyz</span></p>
           </div>
 
           <div className="card">
@@ -293,7 +293,7 @@ export default function App() {
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#111', border: '1px solid var(--border)', borderRadius: 2, padding: '10px 14px' }}>
                             <code style={{ fontFamily: 'monospace', color: '#fff', fontSize: 13, flex: 1 }}>{e.example}</code>
                             <button
-                              onClick={() => navigator.clipboard.writeText(`https://mctools.liamt.xyz${e.example.startsWith('POST') ? '' : e.example}`)}
+                              onClick={() => navigator.clipboard.writeText(`https://api.mctools.liamt.xyz${e.example.startsWith('POST') ? '' : e.example}`)}
                               style={{ background: 'transparent', border: 'none', color: 'var(--gray)', cursor: 'pointer', fontSize: 13, flexShrink: 0 }}
                             >Copiar</button>
                           </div>
@@ -322,11 +322,11 @@ export default function App() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
-              <a href="https://mctools.liamt.xyz" target="_blank" rel="noreferrer" style={{ fontFamily: 'Minecraft, monospace', fontSize: 12, background: 'var(--gold)', color: '#111', padding: '10px 20px', borderRadius: 2, textDecoration: 'none', display: 'inline-block' }}>
+              <a href="https://api.mctools.liamt.xyz" target="_blank" rel="noreferrer" style={{ fontFamily: 'Minecraft, monospace', fontSize: 12, background: 'var(--gold)', color: '#111', padding: '10px 20px', borderRadius: 2, textDecoration: 'none', display: 'inline-block' }}>
                 Ir a la API →
               </a>
-              <a href="https://mctools.liamt.xyz/" target="_blank" rel="noreferrer" style={{ fontFamily: 'Minecraft, monospace', fontSize: 12, background: 'transparent', color: '#fff', padding: '10px 20px', borderRadius: 2, textDecoration: 'none', border: '1px solid var(--border)', display: 'inline-block' }}>
-                Documentación
+              <a href="https://mctools.liamt.xyz" target="_blank" rel="noreferrer" style={{ fontFamily: 'Minecraft, monospace', fontSize: 12, background: 'transparent', color: '#fff', padding: '10px 20px', borderRadius: 2, textDecoration: 'none', border: '1px solid var(--border)', display: 'inline-block' }}>
+                Web
               </a>
             </div>
           </div>
@@ -390,7 +390,7 @@ export default function App() {
             <p className="font-mc" style={{ color: 'var(--gold)', fontSize: 12, marginBottom: 18, letterSpacing: 1 }}>Contacto</p>
             <div style={{ background: '#111', border: '1px solid var(--border)', borderRadius: 2, padding: '14px 16px', marginBottom: 16 }}>
               <p className="font-mono" style={{ color: 'var(--green-l)', fontSize: 11, marginBottom: 4 }}>URL Base</p>
-              <p className="font-mono" style={{ color: '#fff', fontSize: 11, wordBreak: 'break-all' }}>mctools.liamt.xyz</p>
+              <p className="font-mono" style={{ color: '#fff', fontSize: 11, wordBreak: 'break-all' }}>api.mctools.liamt.xyz</p>
             </div>
             <div style={{ background: '#111', border: '1px solid var(--border)', borderRadius: 2, padding: '14px 16px' }}>
               <p className="font-mono" style={{ color: 'var(--green-l)', fontSize: 11, marginBottom: 4 }}>Estado</p>
