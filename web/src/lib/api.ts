@@ -1,4 +1,4 @@
-const BASE = import.meta.env.DEV ? '/api' : 'https://mctools.liamt.xyz'
+const BASE = import.meta.env.DEV ? '/api' : 'https://api.mctools.liamt.xyz'
 
 export async function fetchPlayer(name: string) {
   const res = await fetch(`${BASE}/player/${encodeURIComponent(name)}`)
