@@ -43,7 +43,7 @@ function SkinPreview({ skinUrl, name, onDownload }: { skinUrl: string; name: str
   )
 }
 
-function CapePreview({ capeUrl, name, onDownload }: { capeUrl: string; name: string; onDownload: () => void }) {
+function CapePreview({ capeUrl, onDownload }: { capeUrl: string; name?: string; onDownload: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
