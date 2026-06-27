@@ -69,13 +69,13 @@ async function getProfile(name: string, base: string) {
     uuid_dashed: dashUuid(uuid),
     name: realName,
     skin: p.skin_texture
-      ? { url: `${base}/player/${realName}/skin-texture`, model: slim ? 'slim' : 'classic' }
+      ? { url: `${base}/player/${realName}/skin.png`, model: slim ? 'slim' : 'classic' }
       : null,
     cape: capeUrl
-      ? { url: `${base}/player/${realName}/cape-texture` }
+      ? { url: `${base}/player/${realName}/cape.png` }
       : null,
-    head_render: `${base}/player/${realName}/head`,
-    body_render: `${base}/player/${realName}/body`,
+    head_render: `${base}/player/${realName}/head.png`,
+    body_render: `${base}/player/${realName}/body.png`,
     // URLs originales para uso interno del 3D viewer (CORS nativo de Mojang)
     _textures: {
       skin: p.skin_texture ? toHttps(p.skin_texture) : null,
@@ -112,7 +112,7 @@ playerRoutes.get('/:name/skin', async (c) => {
   return c.json({ name: profile.name, uuid: profile.uuid, skin: profile.skin, head_render: profile.head_render, body_render: profile.body_render })
 })
 
-playerRoutes.get('/:name/skin-texture', async (c) => {
+playerRoutes.get('/:name/skin.png', async (c) => {
   const name = c.req.param('name')
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
@@ -120,7 +120,7 @@ playerRoutes.get('/:name/skin-texture', async (c) => {
   return proxyImage(profile._textures.skin)
 })
 
-playerRoutes.get('/:name/cape-texture', async (c) => {
+playerRoutes.get('/:name/cape.png', async (c) => {
   const name = c.req.param('name')
   const base = new URL(c.req.url).origin
   const profile = await getProfile(name, base)
@@ -128,7 +128,7 @@ playerRoutes.get('/:name/cape-texture', async (c) => {
   return proxyImage(profile._textures.cape)
 })
 
-playerRoutes.get('/:name/head', async (c) => {
+playerRoutes.get('/:name/head.png', async (c) => {
   const name = c.req.param('name')
   const size = Number(c.req.query('size') ?? 200)
   const res = await fetch(`https://playerdb.co/api/player/minecraft/${name}`)
@@ -138,7 +138,7 @@ playerRoutes.get('/:name/head', async (c) => {
   return proxyImage(`https://mc-heads.net/head/${json.data.player.raw_id}/${size}`)
 })
 
-playerRoutes.get('/:name/body', async (c) => {
+playerRoutes.get('/:name/body.png', async (c) => {
   const name = c.req.param('name')
   const res = await fetch(`https://playerdb.co/api/player/minecraft/${name}`)
   if (!res.ok) return c.json({ error: `Player "${name}" not found` }, 404)
